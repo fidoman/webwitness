@@ -1,0 +1,6 @@
+Data at server:
+1. List of registered clusters
+  Name+id, key
+  When cluster is registered, file with information about it must be created with racingless method
+
+2. List of nodes per cluster

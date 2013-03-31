@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ -e test ]
+then
+  rm -r test
+fi
+
+mkdir test
+
+./dirs.py test proc1 100 &
+./dirs.py test proc1 100 &
+./dirs.py test proc1 100 &
+./dirs.py test proc1 100 &

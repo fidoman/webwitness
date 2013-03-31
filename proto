@@ -1,0 +1,35 @@
+1. Cluster registration (use SSL only)
+> name
+< id, key, hmacalg
+
+1.1. Update cluster key
+> name, id *key
+< [newkey, hmacalg] key
+
+Registration should expire after 10 days of last quorum activity.
+
+2. Node registration
+> name, id, nodename *key
+< [nodekey] key
+
+3. Keep-alive
+> name, id, nodename *key
+< list name, state, extended data availability (list of classes - pairs name, latest timestamp or None)
+
+4. Extended data (sent by node if it reply to keep-alive saying that its resource data is unavailable)
+> name, id, nodename *key, class name, value
+(timestamp is set by server)
+reply is same as for keep-alive
+
+4. Extended data request
+> name, id, nodename *key, class name
+
+* encrypted hash
+[] encrypted data
+
+----
+Odd number of quorums is preffered
+Each node carries quorum
+Additionaly independet quorums are deployed
+Each node must be configured identically
+"Force quorum" may be achived with removal of inaccessible quorums from configuration
