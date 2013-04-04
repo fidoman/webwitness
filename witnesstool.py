@@ -3,7 +3,7 @@
 import sys
 import urllib.request
 import json
-import hmac
+from Crypto.Hash import HMAC
 import base64
 
 # without proto
@@ -58,7 +58,11 @@ elif sys.argv[1]=="registernode":
   key=base64.b64decode(b64key.encode("ascii"))
 
   msg=("|".join((cluster, i, node))).encode("ascii")
-  msghmac=hmac.new(key, msg).hexdigest()
+  msghmac=HMAC.new(key, msg).hexdigest()
+
+  print ("key=", repr(key))
+  print ("msg=", msg)
+  print ("HMAC=", msghmac)
 
   req = "http://"+URL+"?newnode="+node+"&cluster="+cluster+"&id="+i+"&hmac="+msghmac
   resp = urllib.request.urlopen(req)

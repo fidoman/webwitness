@@ -12,8 +12,10 @@ import re
 import cgitb
 import base64
 import json
+import traceback
 from Crypto.Hash import HMAC
 from Crypto import Random
+from Crypto.Cipher import AES
 cgitb.enable()
 
 MAXCLUSTERNAME=20
@@ -58,17 +60,22 @@ def register_cluster(name):
     registered = True
 
   key = new_key()
-  keyfile = open(os.path.join(CLUSTERS, dirname, "key"), "w")
-  keyfile.write(repr((key, "md5")))
+  keyfile = open(os.path.join(CLUSTERS, dirname, "key"), "wb")
+  keyfile.write(key)
   keyfile.close()
+  halgfile = open(os.path.join(CLUSTERS, dirname, "hashalg"), "wb")
+  halgfile.write(b"md5")
+  halgfile.close()
   return i, key, "md5"
 
-def get_cluster_key(name, i):
+def get_cluster_info(name, i, info):
+  print("get_cluster_info", name, i, info)
   try:
-    keyfile = open(os.path.join(CLUSTERS, cluster_dir(name, i), "key"), "r")
-    data=eval(keyfile.read())
-    keyfile.close()
+    infofile = open(os.path.join(CLUSTERS, cluster_dir(name, i), info), "rb")
+    data=infofile.read()
+    infofile.close()
   except:
+    #traceback.print_exc()
     return None
   return data
 
@@ -80,7 +87,7 @@ def register_node(cluster, i, node):
   nodefile = os.path.join(clusterdir, node+"#key")
   try:
     nodef = os.fdopen(os.open(nodefile, os.O_CREAT | os.O_EXCL | os.O_WRONLY), "wb")
-  except FileExistsError:
+  except OSError as e:
     return False, "node already exists"
   nodekey = new_key()
   nodef.write(nodekey)
@@ -114,12 +121,13 @@ elif "newnode" in data and "cluster" in data and "id" in data and "hmac" in data
   else:
     providedhmac = data.getfirst("hmac").lower()
     msg = ("|".join((clustername, i, nodename))).encode("ascii")
-    #print(repr(clustername), repr(i))
-    key, hmacalg = get_cluster_key(clustername, i) or (None, "md5")
-    #print(repr(key))
+    print(repr(clustername), repr(i))
+    key = get_cluster_info(clustername, i, "key")
+    hmacalg = get_cluster_info(clustername, i, "hashalg") or "md5"
+    print("key=", repr(key))
     msghmac = HMAC.new(key or b"-"*KEYLENGTH, msg).hexdigest()
-    #print(repr(providedhmac))
-    #print(repr(msghmac))
+    print("provided=", repr(providedhmac))
+    print("calculated=", repr(msghmac))
     authentic = compare_hashes(providedhmac, msghmac) and (key is not None)
     if authentic:
       print ("will register")
