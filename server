@@ -4,3 +4,7 @@ Data at server:
   When cluster is registered, file with information about it must be created with racingless method
 
 2. List of nodes per cluster
+  Create files for each node:
+    node#key
+    node#alive
+    node#status
