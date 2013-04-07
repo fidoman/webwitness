@@ -6,6 +6,9 @@ import json
 from Crypto.Hash import HMAC
 import base64
 
+# keep local track of cluster configuration
+# file format must be the same as the one that exists on witness resource
+
 # without proto
 URL="127.0.0.1/cgi-bin/webwitness.py"
 
@@ -14,6 +17,11 @@ def usage():
   print("""
 registercluster <name>
 registernode <nodename> <cluster> <id> <key>
+dropnode <nodename> <cluster> <id>
+setoption clusteroption value
+addwitness 
+removewitness 
+
 """)
 
 if len(sys.argv)<2:

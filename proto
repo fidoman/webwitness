@@ -16,6 +16,9 @@ Registration should expire after 10 days of last quorum activity.
 > name, id, nodename *key
 < list name, state, extended data availability (list of classes - pairs name, latest timestamp or None)
 
+In return to keepalive request server returns configuration version and changes since previous keep-alive
+
+
 4. Extended data (sent by node if it reply to keep-alive saying that its resource data is unavailable)
 > name, id, nodename *key, class name, value
 (timestamp is set by server)
@@ -33,3 +36,13 @@ Each node carries quorum
 Additionaly independet quorums are deployed
 Each node must be configured identically
 "Force quorum" may be achived with removal of inaccessible quorums from configuration
+
+----
+Adaptive witness
+Align keep-alive query frequency and node unavailability time-out with workload
+Weekly loaded cluster will generate less traffic and longer fail-over time (DNS or other)
+and high loaded is checked frequentrly and optimized to quick failover with higher costs
+5 minutes for non-interactive applications (e-mail, news)
+1 minute for weekly interactive (instant messaging)
+15 seconds for on-line applications (web)
+3 seconds for telephony, video etc.

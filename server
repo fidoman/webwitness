@@ -8,3 +8,20 @@ Data at server:
     node#key
     node#alive
     node#status
+
+3. Additional data per node/cluster
+  Cluster config:
+    keep-alive period
+    keep-alive timeout
+    nodes list
+    witnesses list
+    config version
+    secondary admin e-mail
+  Per-node config:
+    online services list
+    used config version
+  Per-service config:
+    service-specific data
+
+
+Data are stored at witnesses, some nodes may not to have witnesses installed.
